@@ -1,32 +1,39 @@
 from game import Game
-
-
+from tiebreak import Tiebreak
 
 if __name__ == '__main__':
-    prob = {'Federer': 0.55, 'Djokovic': 0.45}
-    server = 'Federer'
+    prob = {'Federer': 0.55, 'Isner': 0.45}
+    server = 'Isner'
 
-    N_GAMES = 10_000
+    player0, player1 = prob.keys()
+    stats = {player0: 0, player1: 0}
 
-    fed_wins, djo_wins = 0, 0
+    for _ in range(10_000):
+        tiebreak = Tiebreak(prob, server)
+        #print(tiebreak.print_score())
+        #print()
+        while True:
+            point_winner = tiebreak.play_point()
+            #print(f'{point_winner} wins the point')
+            #print(tiebreak.print_score())
+            #print()
+            if tiebreak.tiebreak_over(): break
+        stats[tiebreak.get_winner()] += 1
+        #print(f'{tiebreak.get_winner()} wins the tie break')
 
-    for _ in range(N_GAMES):
-        tennis_game = Game(prob, server)
-        winner = tennis_game.play()
-        if winner == 'Federer': fed_wins += 1
-        elif winner == 'Djokovic': djo_wins += 1
+    print(stats)
+    print(f'{player0} wins {stats[player0] / sum(stats.values()):.3%} tie breaks')
 
-    print(f'{N_GAMES} games played, Fed wins {fed_wins / N_GAMES:.00%}, Djoker wins {djo_wins / N_GAMES:.00%}')
-
-    
-    # print(tennis_game.get_game_state())
+    # tennis_game = Game(prob, server)
+    # print(f'{server} serving')
+    # print(tennis_game.print_score())
     # print()
-    
-    # while not tennis_game.game_over():
+
+    # while True:
     #     point_winner = tennis_game.play_point()
     #     print(f'{point_winner} wins the point')
     #     if tennis_game.game_over(): break
-    #     print(tennis_game.get_game_state())
+    #     print(tennis_game.print_score())
     #     print()
 
     # print(f'{tennis_game.get_winner()} wins the game')
